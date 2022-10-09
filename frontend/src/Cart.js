@@ -1,59 +1,36 @@
- import React from 'react'
-
-// const Cart = () => {
-
-//     const [user, setUser] = useState({
-//         user_id: "", product_id: "", quantity: ""
-//     });
-//     let name, value;
-//     const handleInput = (e) => {
-//         name = e.target.name;
-//         value = e.target.value;
-
-//         setUser({...user, [name]: value});
-//     } 
-//     const PostData = async(e) =>{
-//        e.preventDefault();
-//        const {email, password} = user;
-//        const res = await fetch("/loginUser", {
-//         method: "POST",
-//         headers: {
-//             "Content-Type" : "application/json"
-//         },
-//         body: JSON.stringify({
-//             email, password
-//         })
-//        }) ;
-//        const data = await res.json();
-//             if( data.status === 400 || !data){
-//                 window.alert(data.message)
-//             }
-//             else{
-//                 window.alert(data.message);
-//                 navigate("/");
-//             }
-//     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+import React, {useEffect, useState}from 'react'
+import CartItem from './components/cartItem';
 
 const Cart = () => {
+  const [cartProducts, setCartProducts] = useState([]);
+  useEffect(() => {
+    fetch("/cart", {
+        method: "GET",
+        headers: {
+            Accept: "application/json",
+            "Content-Type" : "application/json"
+        },
+        credentials: "include"
+    }).then((res) => res.json())
+      .then((products) => {
+          setCartProducts(products);
+    }).catch((err) =>{
+        console.log(err);
+    });
+  },[]);
+  console.log(cartProducts);
   return (
-    <div>Cart</div>
+    <>
+      {cartProducts.map((cartProduct) =>(
+        <CartItem 
+          key={cartProduct.productId}
+          productName ={cartProduct.productName}
+          productImage ={cartProduct.productImage}
+          productPrice ={cartProduct.productPrice}
+          quantity ={cartProduct.quantity}
+        />
+      ))}
+      </>
   )
 }
 

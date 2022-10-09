@@ -1,10 +1,13 @@
-import React, { useState } from "react";
+import React, { useState,useContext } from "react";
 import { NavLink } from "react-router-dom";
 import styled from "styled-components";
 import { FiShoppingCart } from "react-icons/fi";
 import { CgMenu, CgClose } from "react-icons/cg";
+import { UserContext } from '../App';
 
 const Nav = () => {
+  const {state, dispatch} = useContext(UserContext);
+
   const [menuIcon, setMenuIcon] = useState();
 
   const Nav = styled.nav`
@@ -138,75 +141,115 @@ const Nav = () => {
       }
     }
   `;
-
+  const RenderMenu = () =>{
+    if(state[0]){
+     return ( 
+      <ul className="navbar-lists">
+      <li>
+        <NavLink
+          to="/"
+          className="navbar-link "
+          onClick={() => setMenuIcon(false)}>
+          Home
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/about"
+          className="navbar-link "
+          onClick={() => setMenuIcon(false)}>
+          About
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/products"
+          className="navbar-link "
+          onClick={() => setMenuIcon(false)}>
+          Products
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/contact"
+          className="navbar-link "
+          onClick={() => setMenuIcon(false)}>
+          Contact
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/logout"
+          className="navbar-link "
+          onClick={() => setMenuIcon(false)}>
+          Logout
+        </NavLink>
+      </li>
+      <li>
+        <NavLink to="/cart" className="navbar-link cart-trolley--link">
+          <FiShoppingCart className="cart-trolley" />
+          <span className="cart-total--item"> 10 </span>
+        </NavLink>
+      </li>
+    </ul>)
+    }
+    else{
+      return ( 
+        <ul className="navbar-lists">
+        <li>
+          <NavLink
+            to="/"
+            className="navbar-link "
+            onClick={() => setMenuIcon(false)}>
+            Home
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/about"
+            className="navbar-link "
+            onClick={() => setMenuIcon(false)}>
+            About
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/products"
+            className="navbar-link "
+            onClick={() => setMenuIcon(false)}>
+            Products
+          </NavLink>
+        </li>
+        <li>
+          <NavLink
+            to="/contact"
+            className="navbar-link "
+            onClick={() => setMenuIcon(false)}>
+            Contact
+          </NavLink>
+        </li><li>
+        <NavLink
+          to="/signup"
+          className="navbar-link "
+          onClick={() => setMenuIcon(false)}>
+          Sign Up
+        </NavLink>
+      </li>
+      <li>
+        <NavLink
+          to="/login"
+          className="navbar-link "
+          onClick={() => setMenuIcon(false)}>
+          Login
+        </NavLink>
+      </li>
+      </ul>
+    )}
+  }
   return (
     <Nav>
       <div className={menuIcon ? "navbar active" : "navbar"}>
-        <ul className="navbar-lists">
-          <li>
-            <NavLink
-              to="/"
-              className="navbar-link "
-              onClick={() => setMenuIcon(false)}>
-              Home
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/about"
-              className="navbar-link "
-              onClick={() => setMenuIcon(false)}>
-              About
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/products"
-              className="navbar-link "
-              onClick={() => setMenuIcon(false)}>
-              Products
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/contact"
-              className="navbar-link "
-              onClick={() => setMenuIcon(false)}>
-              Contact
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/signup"
-              className="navbar-link "
-              onClick={() => setMenuIcon(false)}>
-              Sign Up
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/login"
-              className="navbar-link "
-              onClick={() => setMenuIcon(false)}>
-              Login
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/logout"
-              className="navbar-link "
-              onClick={() => setMenuIcon(false)}>
-              Logout
-            </NavLink>
-          </li>
-          <li>
-            <NavLink to="/cart" className="navbar-link cart-trolley--link">
-              <FiShoppingCart className="cart-trolley" />
-              <span className="cart-total--item"> 10 </span>
-            </NavLink>
-          </li>
-        </ul>
-
+        <RenderMenu/>
         {/* two button for open and close of menu */}
         <div className="mobile-navbar-btn">
           <CgMenu

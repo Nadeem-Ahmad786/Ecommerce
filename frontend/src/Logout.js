@@ -1,8 +1,12 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useContext} from 'react';
 import { useNavigate } from 'react-router-dom';
 // import { NavLink } from 'react-router-dom';
 // import { Button } from "./styles/Button";
+import { UserContext } from './App';
+
 const Logout = () => {
+
+    const {state, dispatch} = useContext(UserContext);
    //promises - newcode
 
    const navigate = useNavigate();
@@ -16,8 +20,10 @@ const Logout = () => {
         },
         credentials: "include"
     }).then((res) => {
+        dispatch({type:"USER", payload:[false, null]})
+        console.log(state);
         navigate("/login");
-        if( res.status != 200 || !res){
+        if( res.status !== 200 || !res){
             window.alert(res.error)
         }
     }).catch((err) =>{

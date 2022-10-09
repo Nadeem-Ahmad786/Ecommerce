@@ -53,7 +53,7 @@ app.post("/loginUser", async(req, res) => {
                 httpOnly: true
             });
             //res.send(req.cookies.NAEcommercetoken);
-            res.status(201).send({message: "Login Successfully"});
+            res.status(201).send({message: "Login Successfully", userData: user});
 
         }
         else{
@@ -84,34 +84,105 @@ app.get("/logout", auth, async(req, res) =>{
 });
 
 
-app.get("/cart", function(req, res){
-    const user_id = req.body._id;
-});
+app.get("/cart",auth, async function(req, res){
+//     const {user_id} =req.body;
+//     const cartProducts = []
+//     const user = await User.findOne({_id:user_id});
+//     //console.log(user);
+//         if(!(user==undefined || user == null)){
+//             const cartProducts =  user.cart.map(async(cartItem) =>{
+//            await Product.findOne({_id:cartItem.productid}, function(err, product){
+//                 if(!err){
+//                     const item = {
+//                         productId: cartItem.productid,
+//                         productName: product.productName,
+//                         productImage: product.productImage,
+//                         productPrice: product.productPrice,
+//                         quantity: cartItem.quantity,
+//                     }
+//                     return item;
+//                 }
+//                 });
+//             });
+//             res.send(cartProducts);
+//         }
 
-app.post("/cart", function(req, res){
-    const {user_id, product_id, quantity} = req.body;
-    if(quantity==undefined)
-        quantity= 1;
-    if(quantity==0){
-        const user = User.findOne({_id: user_id});
-        user.cart = user.cart.filter((currentProduct) => {
-            return currentProduct.product_id != product_id;
-        });
-        user.save();
+//    // res.send(cartProducts);
+    const user_id =req.user._id;
+    const cartProducts = [];
+    //find user by ID
+    const user = await User.findById(user_id);
+    //means user not found
+    if(!user){
+        res.send("User is not registered")
+        return ;
     }
+    for( const cartItem of user.cart) {
+        const product = await Product.findById(cartItem.productid);
+        const item = {
+            productId: cartItem.productid,
+            productName: product.productName,
+            productImage: product.productImage,
+            productPrice: product.productPrice,
+            quantity: cartItem.quantity,
+            }
+            cartProducts.push(item);
+    }
+    console.log(cartProducts);
+    res.send(cartProducts);
 });
 
-app.get("/products/all",function(req, res){
-    const kk = Product.find(function(err, products){
-        if(err){
-            res.status(400);
-        }
-        else{
-            //console.log(products);
-            res.send(products);
-        }});
+app.post("/cart", async function(req, res){
+    let {user_id, product_id, quantity} = req.body;
+    console.log(user_id);
+    console.log(product_id);
+    console.log(quantity);
     
-})
+    if(quantity==undefined){
+        quantity= 1;
+  //      User.update({_id: user_id}, {$push: {cart: {productid: product_id, quantity: quantity}}});
+
+        User.findOneAndUpdate({_id:user_id},{$push: {cart: {productid: product_id, quantity: quantity}}}, function(err, foundUser){
+            if(!err)
+                console.log(foundUser);
+        });
+        res.status(201).send({message: "product added succesfully"});
+        return ;
+    }
+    if(quantity==0){
+        // console.log("opps")
+        const user =await User.findById(user_id);
+            if(!user){
+                window.alert("User not found");
+                res.status(400).send({message: "User not found"});
+                return ;
+            }
+            user.cart = user.cart.filter((currentProduct) => {
+                    return currentProduct.productid != product_id;
+            });
+            console.log(user.cart);
+            user.save();
+            console.log("Hey");
+            console.log(user.cart);
+            res.status(201).send({message:"product remove successfully"});
+            return ;
+    
+        // User.findOneAndUpdate({_id:user_id},{$pull: {cart: {productid: product_id}}}, function(err, foundUser){
+        //     if(!err)
+        //         console.log(foundUser);
+        // });
+       // res.status(201).send({message: "product delete succesfully"});
+       // return ;
+        
+    }
+    
+});
+
+app.get("/products/all", async(req, res) => {
+    const products = await Product.find({});
+       console.log(products);
+       res.status(200).send(products);
+});
 
 app.listen(5000, function(){
     console.log("Server Started");

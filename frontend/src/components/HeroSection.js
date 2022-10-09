@@ -17,7 +17,7 @@ const HeroSection = ({ myData }) => {
               atque temporibus veniam doloribus libero ad error omnis voluptates
               animi! Suscipit sapiente.
             </p>
-            <NavLink>
+            <NavLink to={"/products"}>
               <Button>show now</Button>
             </NavLink>
           </div>
@@ -40,7 +40,7 @@ const HeroSection = ({ myData }) => {
 const Wrapper = styled.section`
   padding: 12rem 0;
   img {
-    min-width: 10rem;
+    min-width: 3rem;
     height: 10rem;
   }
   .hero-section-data {

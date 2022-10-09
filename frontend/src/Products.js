@@ -1,9 +1,11 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useState, useContext} from 'react'
 import Card from "./components/Card";
-const Products = () => {
+import { UserContext } from './App';
 
+const Products = () => {
+  const {state, dispatch} = useContext(UserContext);
   const [products, setProducts] = useState([]);
-   useEffect(() => {
+  useEffect(() => {
     fetch("/products/all", {
         method: "GET",
         headers: {
@@ -11,28 +13,26 @@ const Products = () => {
             "Content-Type" : "application/json"
         },
         credentials: "include"
-    }).then((res) => {
-      console.log(res);
-        setProducts(res);
-      // console.log(products);
-        if( res.status === 400 || !res){
-            window.alert(res.error)
-        }
+    }).then((res) => res.json())
+      .then((products) => {
+          setProducts(products);
     }).catch((err) =>{
         console.log(err);
-    })
-  });
+    });
+  },[]);
 
   return (
     <div className='wrapper'>
-    {[products].map((product, index) => (
+    {products.map((product) => (
         <Card
-          key = {index}
+          key = {product._id}
+          product_id = {product._id}          
           img={product.productImage}
           title={product.productName}
           description={product.productDescription}
           price= {product.productPrice}
         />
+
     ))}
     </div>
   )

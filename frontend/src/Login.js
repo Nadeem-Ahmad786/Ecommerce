@@ -1,7 +1,11 @@
-import React, {useState} from 'react'
+import React, {useContext, useState} from 'react'
 import {useNavigate}  from "react-router-dom";
 
+import { UserContext } from './App';
 const Login = () => {
+
+  const {state, dispatch} = useContext(UserContext);
+
   const navigate = useNavigate();
 
     const [user, setUser] = useState({
@@ -31,6 +35,8 @@ const Login = () => {
                 window.alert(data.message)
             }
             else{
+                dispatch({type:"USER", payload:[true, data.userData]})
+                console.log(state);
                 window.alert(data.message);
                 navigate("/");
             }

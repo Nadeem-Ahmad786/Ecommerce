@@ -1,10 +1,10 @@
-import React from "react";
+import React, { createContext, useReducer  } from "react";
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
 import Home from "./Home";
 import About from "./About";
 import Products from "./Products";
 import Contact from "./Contact";
-// import SingleProduct from "./SingleProduct";
+import SingleProduct from "./SingleProduct";
 import Cart from "./Cart";
 import ErrorPage from './ErrorPage'
 import { GlobalStyle } from "./GlobalStyle";
@@ -13,7 +13,12 @@ import Header from "./components/Header";
 import Signup from "./Signup";
 import Login from "./Login";
 import Logout from "./Logout"
+import {initialState, reducer} from "../src/reducer/UseReducer"
+
+ export const UserContext = createContext();
 const App = () => {
+    
+    const [state, dispatch] = useReducer(reducer, initialState)
     const theme = {
         colors:{
             heading: "rgb(24, 24, 29)",
@@ -36,7 +41,10 @@ const App = () => {
             tab: "998px",
         },
     };
+    
     return (
+
+        <UserContext.Provider value={{ state, dispatch}}>
         <ThemeProvider theme={theme}>
             <Router>
                 <GlobalStyle/>
@@ -49,13 +57,13 @@ const App = () => {
                     <Route path="/login" element={<Login />} />
                     <Route path="/logout" element={<Logout />} />
                     <Route path="/contact" element={<Contact />} />
-                    {/* <Route path="/singleproduct/:id" element={<SingleProduct />} /> */}
+                    <Route path="/singleproduct/:id" element={<SingleProduct />} />
                     <Route path="/cart" element={<Cart />}/>
                     <Route path="*" element={<ErrorPage />} />
                 </Routes>
             </Router>
         </ThemeProvider>
+        </UserContext.Provider>
     );
 }
-
 export default App;
