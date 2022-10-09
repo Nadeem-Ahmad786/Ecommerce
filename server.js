@@ -2,7 +2,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const mongoose = require("mongoose");
 mongoose.connect("mongodb://localhost:27017/eCommerceDB", {useNewUrlParser: true});
-const bcrypt = require("bcryptjs");const User = require("./register");
+const bcrypt = require("bcryptjs");
+const User = require("./models/register");
+const Product = require("./models/products");
 const cookieParser = require("cookie-parser");
 const auth = require("./middleware/auth");
 const app = express();
@@ -14,35 +16,30 @@ app.use(express.static("public"));
 app.get("/", function(req, res){
     res.sendFile(__dirname + "/public/index.html");
 })
-
-app.get("/registerUser", function(req, res){
-    res.sendFile(__dirname + "/public/register.html");
-})
 app.post("/registerUser", async(req, res) => {
     const {name, email, password } = req.body;
     if(!name || !email || !password){
-        res.status(400).send("Please Enter all the Feilds");;
+        res.status(400).send({error: "Please Enter all the Feilds"});
     }
 
     const userExits = await User.findOne({ email });
     if(userExits){
-        res.status(400).send("user already exists");
+        res.status(400).send({error: "user already exists"});
     }
-    const user =new User({
-        name: name,
-        email: email,
-        password: password,
-    });
-                                                                                  
-    const token = await user.generateToken();  
-    console.log(token);                                                                                       
-    user.save();
-    res.send("User Registed");
+    else{
+        const user =new User({
+            name: name,
+            email: email,
+            password: password,
+        });
+                                                                                    
+        const token = await user.generateToken();  
+        console.log(token);                                                                                       
+        user.save();
+        res.status(200).send({message: "User Registed"});
+    }
 });
 
-app.get("/loginUser", function(req, res){
-    res.sendFile(__dirname + "/public/login.html");
-})
 app.post("/loginUser", async(req, res) => {
     const {email, password} = req.body;
     const user = await User.findOne({email});
@@ -56,11 +53,11 @@ app.post("/loginUser", async(req, res) => {
                 httpOnly: true
             });
             //res.send(req.cookies.NAEcommercetoken);
-            //res.status(201).send(user);
-            res.sendFile(__dirname + "/public/index.html")
+            res.status(201).send({message: "Login Successfully"});
+
         }
         else{
-            res.status(404).send("password is incorrect!");
+            res.status(400).send({message: "password is incorrect!"});
         }
     }
     else{
@@ -68,23 +65,54 @@ app.post("/loginUser", async(req, res) => {
     }
 });
 
-app.get("/logOut", auth, async(req, res) =>{
+app.get("/logout", auth, async(req, res) =>{
     try{
         //for single logout
-        // req.user.tokens = req.user.tokens.filter((currentElement) => {
-        //     return currentElement.token != req.token;
-        // })
+        req.user.tokens = req.user.tokens.filter((currentElement) => {
+            return currentElement.token != req.token;
+         })
         // logout from all devices
-        req.user.tokens =[];
+        // req.user.tokens =[];
         res.clearCookie("NAEcommercetoken");
         console.log("logout succesfully");
         await req.user.save();
-        res.sendFile(__dirname + "/public/login.html")
+         res.status(200).send("user logout")
     }
     catch (error) {
-        res.status(500).send(error);
+        res.status(500).send({error});
     }
+});
+
+
+app.get("/cart", function(req, res){
+    const user_id = req.body._id;
+});
+
+app.post("/cart", function(req, res){
+    const {user_id, product_id, quantity} = req.body;
+    if(quantity==undefined)
+        quantity= 1;
+    if(quantity==0){
+        const user = User.findOne({_id: user_id});
+        user.cart = user.cart.filter((currentProduct) => {
+            return currentProduct.product_id != product_id;
+        });
+        user.save();
+    }
+});
+
+app.get("/products/all",function(req, res){
+    const kk = Product.find(function(err, products){
+        if(err){
+            res.status(400);
+        }
+        else{
+            //console.log(products);
+            res.send(products);
+        }});
+    
 })
+
 app.listen(5000, function(){
     console.log("Server Started");
 })
