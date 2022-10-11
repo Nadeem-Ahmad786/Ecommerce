@@ -89,7 +89,43 @@
         color: #06283D;
       }
 
-
+/* Css for singleproduct */
+.main_div{
+  margin: 0 auto;
+    padding: 10em 0;
+    text-align: center;
+    font-family: 'Poppins', sans-serif;
+    color: #F2F2F2;
+    background-color: #EEF1FF;
+}
+.container{
+  width: 75%;
+  margin: auto;
+}
+.sub_con{
+  border-radius: 50px;
+    background-color: #D2DAFF;
+    box-shadow: 5px 5px 10px #AAC4FF, -5px -5px 10px #B1B2FF;
+    padding: 3%;
+    text-align: center;
+}
+.sub_con h2{
+  font-size: 3rem;
+  padding-top: 3%;
+}
+.sub_con h3{
+  padding: 40px 0;
+  font-size: 1.5rem;
+  font-weight: 0.1rem;
+}
+.sub_con form{
+  padding-bottom: 20px;
+}
+.single_img{
+  height: 25%;
+  width: 25%;
+  border-radius: 5%;
+}
 /* Css for cards */
 @import url("https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400;700&display=swap");
 
@@ -106,7 +142,7 @@ body {
   color: #4f546c;
 }
 
-.wrapper {
+.rapper {
   margin: 2rem;
   display: grid;
   gap: 1rem;
@@ -121,8 +157,8 @@ body {
   display: flex;
 }
   .card__img {
-    width: 14rem;
-    height: 11rem;
+    width: 100%;
+    height: 50rem;
     object-fit: cover;
   }
 
@@ -136,6 +172,9 @@ body {
     font-size: 2rem;
     font-weight: 900;
     margin-bottom: 0.5rem;
+  }
+  .card__title:hover{
+    color: #B1B2FF;
   }
   .card__description {
     line-height: 1.9rem;
@@ -171,7 +210,7 @@ body {
     }
 
 @media screen and (min-width: 600px) {
-  .wrapper {
+  .rapper {
     grid-template-columns: repeat(auto-fit, minmax(14rem, 30rem));
   }
 
@@ -205,6 +244,14 @@ body {
 }
 .subCart .imgDiv{
   float: left;
+}
+.subCart h3{
+  font-weight: 1000;
+  font-size: x-large
+}
+.price{
+  margin-top: 2.5rem;
+  font-size: 25rem;
 }
 .subcartSecond{
   clear: left;

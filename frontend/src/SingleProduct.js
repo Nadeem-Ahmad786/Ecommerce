@@ -2,18 +2,18 @@ import React, {useContext} from 'react'
 import { useParams } from 'react-router-dom';
 import { useLocation } from 'react-router';
 import { UserContext } from './App';
+import { Button } from "./styles/Button";
 const SingleProduct = () => {
   const {id} = useParams();
- const data = useLocation();
+ const singleProductData = useLocation();
   // console.log(id)
   // console.log(data.state.description);
-
   const {state, dispatch} = useContext(UserContext);
 
   const PostData = async(e) =>{
     e.preventDefault();
     const user_id = state[1]._id;
-    const product_id = data.state.product_id;
+    const product_id = singleProductData.state.product_id;
     const res = await fetch("/cart", {
      method: "POST",
      headers: {
@@ -33,12 +33,17 @@ const SingleProduct = () => {
  }
 
   return (
-    <div >
-      <h1>{id}</h1>
-      <h3>{data.state.description}</h3> 
+    <div className='main_div'>
+    <div className="container">
+    <div className="sub_con">
+      <img className="single_img" src={singleProductData.state.product_img} alt={id}/>
+      <h2>{id}</h2>
+      <h3>{singleProductData.state.description}</h3> 
       <form method="post">
-      <button>Add to Cart</button>
+      <Button onClick={PostData}>Add to Cart</Button>
       </form>
+    </div>
+    </div>
     </div>
   );
 }

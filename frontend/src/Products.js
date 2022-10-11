@@ -22,7 +22,7 @@ const Products = () => {
   },[]);
 
   return (
-    <div className='wrapper'>
+    <div className='rapper'>
     {products.map((product) => (
         <Card
           key = {product._id}

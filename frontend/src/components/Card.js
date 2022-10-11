@@ -9,14 +9,14 @@ const Card = (props) => {
     e.preventDefault();
     const user_id = state[1]._id;
     const product_id = props.product_id;
-    const quantity = 0;
+    // const quantity = 1;
     const res = await fetch("/cart", {
      method: "POST",
      headers: {
          "Content-Type" : "application/json"
      },
      body: JSON.stringify({
-         user_id, product_id, quantity
+         user_id, product_id
      })
     }) ;
     const data = await res.json();
@@ -32,8 +32,8 @@ const Card = (props) => {
         <img src={props.img} className="card__img" />
         <div className="card__body">
         <p className="card__title">
-          <Link  to={"/singleproduct/" + props.title} state= {{description: props.description, product_id: props.product_id}}>{props.title}</Link>
-          </p>
+          <Link className="card__title" to={"/singleproduct/" + props.title} state= {{description: props.description, product_id: props.product_id, product_img: props.img}}>{props.title}</Link>
+        </p>
           <p className="card__description">{props.description}</p>
           <h3 className="card__price">{props.price}</h3>
           <form method="post">
