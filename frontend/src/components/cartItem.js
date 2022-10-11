@@ -11,8 +11,8 @@ const CartItem = (props) => {
         <div className="imgDiv" style={tempCss}>
           <img className="cartImage" src={props.productImage} alt="Cart Item image"/>
          </div>
-        <h2>{props.productName}</h2>
-        <h1>₹ {props.productPrice}</h1>
+        <h3>{props.productName}</h3>
+        <h3 className='price'>₹ {props.productPrice}</h3>
        </div>
       <div className="subcartSecond">
         <button>+</button>
