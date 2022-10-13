@@ -128,29 +128,41 @@ app.get("/cart",auth, async function(req, res){
             }
             cartProducts.push(item);
     }
-    console.log(cartProducts);
+   // console.log(cartProducts);
     res.send(cartProducts);
 });
 
 app.post("/cart", async function(req, res){
     let {user_id, product_id, quantity} = req.body;
-    console.log(user_id);
-    console.log(product_id);
-    console.log(quantity);
-    
+    //console.log(req.body);
+    // console.log(user_id);
+    // console.log(product_id);
+    if(quantity>=1){
+        const user = await User.findOne({_id: user_id}).select({ cart: {$elemMatch: {productid: product_id}}});
+        user.cart[0].quantity = quantity;
+        user.save();
+        res.status(201).send({message: "quantity is changed"});
+        return ;
+    }
     if(quantity==undefined){
+        const user = await User.findOne({_id: user_id}).select({ cart: {$elemMatch: {productid: product_id}}});
+        if(user.cart.length ===1){
+            user.cart[0].quantity += 1;
+            user.save();
+            res.status(201).send({message: "quantity is changed"});
+            return ;
+        }
         quantity= 1;
   //      User.update({_id: user_id}, {$push: {cart: {productid: product_id, quantity: quantity}}});
 
         User.findOneAndUpdate({_id:user_id},{$push: {cart: {productid: product_id, quantity: quantity}}}, function(err, foundUser){
-            if(!err)
-                console.log(foundUser);
+            if(err)
+                console.log("User not found");
         });
         res.status(201).send({message: "product added succesfully"});
         return ;
     }
     if(quantity==0){
-        // console.log("opps")
         const user =await User.findById(user_id);
             if(!user){
                 window.alert("User not found");
@@ -160,10 +172,8 @@ app.post("/cart", async function(req, res){
             user.cart = user.cart.filter((currentProduct) => {
                     return currentProduct.productid != product_id;
             });
-            console.log(user.cart);
+           // console.log(user.cart);
             user.save();
-            console.log("Hey");
-            console.log(user.cart);
             res.status(201).send({message:"product remove successfully"});
             return ;
     

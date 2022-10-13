@@ -17,13 +17,14 @@ const Cart = () => {
     }).catch((err) =>{
         console.log(err);
     });
-  },[]);
-  console.log(cartProducts);
+  });
+  // console.log(cartProducts);
   return (
     <>
       {cartProducts.map((cartProduct) =>(
         <CartItem 
           key={cartProduct.productId}
+          product_id = {cartProduct.productId}
           productName ={cartProduct.productName}
           productImage ={cartProduct.productImage}
           productPrice ={cartProduct.productPrice}
